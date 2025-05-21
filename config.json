@@ -1,0 +1,22 @@
+{
+  "name": "迈越office插件",
+  "guid": "asc.{1616AE85-5DBE-4B6B-A0A9-455C4F1503CN}",
+  "baseUrl": "",
+  "variations": [
+    {
+      "description": "迈越office插件",
+      "type":"background",
+      "url": "index.html",
+      "icons": ["resources/img/icon.png", "resources/img/icon@2x.png"],
+      "isViewer": false,
+      "EditorsSupport": ["word"],
+      "isVisual": false,
+      "isModal": true,
+      "isInsideMode": false,
+      "initDataType": "none",
+      "initData": "",
+      "isUpdateOleOnResize": true,
+      "buttons": []
+    }
+  ]
+}
