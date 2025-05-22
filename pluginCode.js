@@ -30,7 +30,50 @@
             })
         }, 100)
     }
-
+    // 保存文档
+    function saveDocument() {
+        window.Asc.plugin.callCommand(() => {
+            Api.Save();
+        }, false, true, (returnValue) => {
+            window.parent.parent.postMessage({
+                command: 'save'
+            }, "*")
+        })
+    }
+    // 搜索文字
+    function searchContent(data) {
+        window.Asc.scope.searchContentData = data;
+        window.Asc.plugin.callCommand(() => {
+            let doc = Api.GetDocument();
+            doc.RemoveSelection()
+        }, false, true, (returnValue) => { })
+        setTimeout(() => {
+            window.Asc.plugin.callCommand(() => {
+                let { inputLocText, inputLocNo } = Asc.scope.searchContentData;
+                let doc = Api.GetDocument();
+                let results = doc.Search(inputLocText);
+                let targetResult = results[inputLocNo - 1] || results[0];
+                if (targetResult) {
+                    targetResult.Select();
+                }
+                return results.length
+            }, false, true, (returnValue) => {
+                window.parent.parent.postMessage({
+                    command: 'searchContent',
+                    data: returnValue,
+                }, "*")
+            })
+        }, 100)
+    }
+    // 插入文字
+    function insertContent(data) {
+        const { text } = data;
+        window.Asc.plugin.executeMethod("PasteText", [text], () => {
+            window.parent.parent.postMessage({
+                command: 'PasteText'
+            }, "*")
+        });
+    }
     window.Asc.plugin.init = () => {
         window.parent.Common.Gateway.on('internalcommand', (data) => {
             const { command } = data;
@@ -38,7 +81,15 @@
                 case 'jumpToPositionByIndex':
                     selectPositionInTheParagraph(data.data);
                     break;
-
+                case 'save':
+                    saveDocument()
+                    break;
+                case "searchContent":
+                    searchContent(data.data);
+                    break
+                case "insertContent":
+                    insertContent(data.data);
+                    break
                 default:
                     break;
             }
