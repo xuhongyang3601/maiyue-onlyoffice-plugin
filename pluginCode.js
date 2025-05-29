@@ -7,8 +7,7 @@
         window.Asc.plugin.callCommand(() => {
             let doc = Api.GetDocument();
             doc.RemoveSelection()
-        }, false, true, (returnValue) => { })
-        setTimeout(() => {
+        }, false, true, (returnValue) => {
             window.Asc.plugin.callCommand(() => {
                 let { paragraphIndex, start, end, replaceText } = Asc.scope.selectPositionInTheParagraphData;
                 let doc = Api.GetDocument();
@@ -28,7 +27,38 @@
                     data: returnValue,
                 }, "*")
             })
-        }, 100)
+        })
+    }
+    // 跳转到指定表格位置
+    function selectPositionInTheTable(data) {
+        console.log("selectPositionInTheTable", data);
+        window.Asc.scope.selectPositionInTheTableData = data;
+        window.Asc.plugin.callCommand(() => {
+            let doc = Api.GetDocument();
+            doc.RemoveSelection()
+        }, false, true, (returnValue) => {
+            window.Asc.plugin.callCommand(() => {
+                let { tableIndex, rowIndex, cellIndex, start, end } = Asc.scope.selectPositionInTheTableData;
+                let doc = Api.GetDocument();
+                let tables = doc.GetAllTables();
+                let table = tables[tableIndex];
+                if (!table) {
+                    return "没有找到对应的表格";
+                }
+                let cell = table.GetCell(rowIndex, cellIndex);
+                if (!cell) {
+                    return "没有找到对应的单元格";
+                }
+                let range = cell.GetContent().GetRange(start, end);
+                range.Select();
+                return range.GetText();
+            }, false, true, (returnValue) => {
+                window.parent.parent.postMessage({
+                    command: 'selectPositionInTheTable',
+                    data: returnValue,
+                }, "*")
+            })
+        })
     }
     // 保存文档
     function saveDocument() {
@@ -46,8 +76,7 @@
         window.Asc.plugin.callCommand(() => {
             let doc = Api.GetDocument();
             doc.RemoveSelection()
-        }, false, true, (returnValue) => { })
-        setTimeout(() => {
+        }, false, true, (returnValue) => {
             window.Asc.plugin.callCommand(() => {
                 let { inputLocText, inputLocNo } = Asc.scope.searchContentData;
                 let doc = Api.GetDocument();
@@ -63,7 +92,7 @@
                     data: returnValue,
                 }, "*")
             })
-        }, 100)
+        })
     }
     // 插入文字
     function insertContent(data) {
@@ -81,6 +110,9 @@
                 case 'jumpToPositionByIndex':
                     selectPositionInTheParagraph(data.data);
                     break;
+                case "jumpToPositionByTableIndex":
+                    selectPositionInTheTable(data.data);
+                    break
                 case 'save':
                     saveDocument()
                     break;

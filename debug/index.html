@@ -15,6 +15,7 @@
   <body>
     <button id="search">搜索内容</button>
     <button id="insertContent">光标位置插入内容</button>
+    <button id="jumpTable">跳转到表格内指定文字</button>
     <div id="placeholder"></div>
     <script
       type="text/javascript"
@@ -24,9 +25,9 @@
       const config = {
         document: {
           fileType: "docx",
-          key: "Khirz6zTPdfd7",
+          key: "Khirz6zTPdfsx",
           title: "Example Document Title.docx",
-          url: "http://172.18.0.66/dianda/fs/api/attachment/download/a5efe9b6fe0f4041be296ef62d1a8f15.docx",
+          url: "http://172.18.0.66/dianda/fs/api/attachment/download/76a946817c794cb18c24d08876eedba2.docx",
         },
         documentType: "word",
         editorConfig: {
@@ -83,6 +84,17 @@
           .addEventListener("click", function (e) {
             docEditor.serviceCommand("insertContent", {
               text: "测试",
+            });
+          });
+        document
+          .getElementById("jumpTable")
+          .addEventListener("click", function (e) {
+            docEditor.serviceCommand("jumpToPositionByTableIndex", {
+              tableIndex: 0,
+              rowIndex: 1,
+              cellIndex: 1,
+              start: 0,
+              end: 1,
             });
           });
       }
