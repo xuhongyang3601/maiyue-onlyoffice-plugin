@@ -7,7 +7,8 @@
         window.Asc.plugin.callCommand(() => {
             let doc = Api.GetDocument();
             doc.RemoveSelection()
-        }, false, true, (returnValue) => {
+        }, false, true, (returnValue) => { })
+        setTimeout(() => {
             window.Asc.plugin.callCommand(() => {
                 let { paragraphIndex, start, end, replaceText } = Asc.scope.selectPositionInTheParagraphData;
                 let doc = Api.GetDocument();
@@ -27,7 +28,7 @@
                     data: returnValue,
                 }, "*")
             })
-        })
+        }, 100)
     }
     // 跳转到指定表格位置
     function selectPositionInTheTable(data) {
@@ -36,7 +37,8 @@
         window.Asc.plugin.callCommand(() => {
             let doc = Api.GetDocument();
             doc.RemoveSelection()
-        }, false, true, (returnValue) => {
+        }, false, true, (returnValue) => { })
+        setTimeout(() => {
             window.Asc.plugin.callCommand(() => {
                 let { tableIndex, rowIndex, cellIndex, start, end } = Asc.scope.selectPositionInTheTableData;
                 let doc = Api.GetDocument();
@@ -58,7 +60,7 @@
                     data: returnValue,
                 }, "*")
             })
-        })
+        }, 100)
     }
     // 保存文档
     function saveDocument() {
@@ -76,7 +78,8 @@
         window.Asc.plugin.callCommand(() => {
             let doc = Api.GetDocument();
             doc.RemoveSelection()
-        }, false, true, (returnValue) => {
+        }, false, true, (returnValue) => { })
+        setTimeout(() => {
             window.Asc.plugin.callCommand(() => {
                 let { inputLocText, inputLocNo } = Asc.scope.searchContentData;
                 let doc = Api.GetDocument();
@@ -92,7 +95,7 @@
                     data: returnValue,
                 }, "*")
             })
-        })
+        }, 100)
     }
     // 插入文字
     function insertContent(data) {
