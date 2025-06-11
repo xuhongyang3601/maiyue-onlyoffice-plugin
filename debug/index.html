@@ -16,6 +16,7 @@
     <button id="search">搜索内容</button>
     <button id="insertContent">光标位置插入内容</button>
     <button id="jumpTable">跳转到表格内指定文字</button>
+    <button id="insertHtml">插入html</button>
     <div id="placeholder"></div>
     <script
       type="text/javascript"
@@ -69,6 +70,7 @@
       async function initEditor() {
         let token = await createJWT(config, "v2aovmjsBQ4yCbaGD9S3FocOYxpPc5");
         config.token = token;
+        console.log(config);
         const docEditor = new DocsAPI.DocEditor("placeholder", config);
         console.log(docEditor);
         document
@@ -96,6 +98,11 @@
               start: 0,
               end: 1,
             });
+          });
+        document
+          .getElementById("insertHtml")
+          .addEventListener("click", function (e) {
+            docEditor.serviceCommand("insertHtml", "插入的html内容");
           });
       }
       initEditor();

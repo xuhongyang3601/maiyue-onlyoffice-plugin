@@ -106,6 +106,10 @@
             }, "*")
         });
     }
+    // 插入html
+    function insertHtml(data) {
+        window.Asc.plugin.executeMethod("PasteHtml", [data]);
+    }
     window.Asc.plugin.init = () => {
         window.parent.Common.Gateway.on('internalcommand', (data) => {
             const { command } = data;
@@ -125,6 +129,10 @@
                 case "insertContent":
                     insertContent(data.data);
                     break
+                // 插入html
+                case "insertHtml":
+                    insertHtml(data.data);
+                    break;
                 default:
                     break;
             }
