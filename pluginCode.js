@@ -26,6 +26,7 @@
                 window.parent.parent.postMessage({
                     command: 'jumpToPositionByIndex',
                     data: returnValue,
+                    frameEditorId: window.parent.frameEditorId,
                 }, "*")
             })
         }, 100)
@@ -58,6 +59,7 @@
                 window.parent.parent.postMessage({
                     command: 'selectPositionInTheTable',
                     data: returnValue,
+                    frameEditorId: window.parent.frameEditorId,
                 }, "*")
             })
         }, 100)
@@ -68,7 +70,8 @@
             Api.Save();
         }, false, true, (returnValue) => {
             window.parent.parent.postMessage({
-                command: 'save'
+                command: 'save',
+                frameEditorId: window.parent.frameEditorId,
             }, "*")
         })
     }
@@ -93,6 +96,7 @@
                 window.parent.parent.postMessage({
                     command: 'searchContent',
                     data: returnValue,
+                    frameEditorId: window.parent.frameEditorId,
                 }, "*")
             })
         }, 100)
@@ -102,7 +106,8 @@
         const { text } = data;
         window.Asc.plugin.executeMethod("PasteText", [text], () => {
             window.parent.parent.postMessage({
-                command: 'PasteText'
+                command: 'PasteText',
+                frameEditorId: window.parent.frameEditorId,
             }, "*")
         });
     }
@@ -123,6 +128,7 @@
         }, false, true, (returnValue) => {
             window.parent.parent.postMessage({
                 command: 'setHighlight',
+                frameEditorId: window.parent.frameEditorId,
                 data: returnValue,
             }, "*")
         });
@@ -160,6 +166,7 @@
         });
         window.parent.parent.postMessage({
             command: 'maiyuePluginReady',
+            frameEditorId: window.parent.frameEditorId,
         }, "*")
     };
 })(window, undefined);
