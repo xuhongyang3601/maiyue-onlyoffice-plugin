@@ -8,7 +8,7 @@
       #placeholder,
       iframe {
         width: 100%;
-        height: 100vh;
+        height: 90vh;
       }
     </style>
   </head>
@@ -17,22 +17,85 @@
     <button id="insertContent">光标位置插入内容</button>
     <button id="jumpTable">跳转到表格内指定文字</button>
     <button id="insertHtml">插入html</button>
+    <button id="insertAiContent">插入AI内容</button>
+    <button id="highlight">高亮内容</button>
+    <button id="jump">跳转指定位置</button>
     <div id="placeholder"></div>
     <script
       type="text/javascript"
       src="http://localhost/web-apps/apps/api/documents/api.js"
     ></script>
     <script>
+      let messageList = [
+        // "```markdown",
+        "\n# 小小守则，大大成长：小学生",
+        "校园行为规范指南\n\n## 创意性标题",
+        "\n**《10条黄金守则：小学生文明校园",
+        "养成记》**",
+        "\n\n## 主题背景与撰写目的\n在小学阶段，行为规范的培养是塑造学生品格",
+        "和社交能力的关键。本文通过提炼10条核心",
+        "校园规则，帮助小学生建立秩序感、责任感与集体",
+        "意识，为终身发展奠定基础。这些规则融合了教育心理学研究成果与",
+        "一线教师实践经验，既符合儿童认知特点，又具备",
+        "可操作性。\n\n---\n\n## 核心规则体系",
+        "\n\n### 一、学习规范\n1. **课前",
+        "准备三分钟法则**  \n   每节课前",
+        "整理书本、文具，提前3分钟进入教室",
+        "，静候老师点名，培养时间管理意识。",
+        "\n\n2. **课堂互动五要素**  \n   举手发言不插",
+        "话，认真倾听不打断，积极思考勤笔记，",
+        "小组合作重分工",
+        '，课后提问善总结。\n\n3. **作业闭环管理**  \n   每日设立\\"作业登记',
+        '本\\"，记录布置内容→定时完成→家长签字',
+        "→教师批改→错题订正，形成完整",
+        "学习链。\n\n### 二、行为准则\n4.",
+        " **安全红线不可越**  \n   课间活动",
+        "远离危险区域（如楼梯转角、实验器材室",
+        "），禁止追逐打闹，上下楼梯靠右行。",
+        '\n\n5. **物品保管责任制**  \n   建立\\"我的专属',
+        '储物柜\\"，贵重物品贴姓名标签，',
+        "每日检查归位情况，培养物归原处习惯",
+        "。\n\n6. **卫生双维护原则**",
+        "  \n   个人区域每日清理（课桌无杂物、地面无",
+        '纸屑），公共卫生区实行\\"责任到人+轮流',
+        '值日\\"制度。\n\n### 三、社交礼仪',
+        '\n7. **文明用语十二字**  \n   \\"',
+        '请、谢谢、对不起、没关系\\"作为基础用语',
+        "，遇见老师同学主动问好，离别时礼貌",
+        "道别。\n\n8. **冲突解决四步法**",
+        "  \n   冷静呼吸→表达感受→倾听对方",
+        "→协商方案，通过角色扮演训练解决矛盾技巧。",
+        "\n\n### 四、品德培养\n9. **诚信档案制度**",
+        '  \n   设立班级\\"诚实树\\"，承诺事项（如',
+        "借阅图书、保管物品）需公开登记，违规",
+        "者承担对应责任。\n\n10. **感恩实践计划",
+        '**  \n   每月开展\\"感恩行动周',
+        '\\"，通过为父母做家务、为同学送鼓励',
+        "卡片、为老师整理讲台等微行动，培育",
+        "感恩之心。\n\n---\n\n## 执行建议\n- **可视化激励**：设置",
+        '\\"行为积分墙\\"，达标者可获得星星贴',
+        "纸兑换奖励\n- **情景模拟教学**：通过",
+        "戏剧游戏还原真实场景，强化规则记忆\n- **家校联动机制",
+        "**：每月发放《行为习惯反馈表》，由家长",
+        "与教师共同评价\n\n这些规则如同校园生活的导航仪",
+        "，帮助小学生在秩序与自由间找到平衡点。",
+        "当规则内化为自觉行动时，每个孩子都能",
+        "在文明的土壤中茁壮成长。",
+      ];
       const config = {
         document: {
           fileType: "docx",
-          key: "Khirz6zTPdfsx",
+          key: "Khirz6zTPdfsq",
           title: "Example Document Title.docx",
           url: "http://172.18.0.66/dianda/fs/api/attachment/download/76a946817c794cb18c24d08876eedba2.docx",
         },
         documentType: "word",
         editorConfig: {
           callbackUrl: "https://example.com/url-to-callback.ashx",
+          lang: "zh",
+          customization: {
+            autosave: false,
+          },
         },
       };
       async function createJWT(json, secret) {
@@ -103,6 +166,65 @@
           .getElementById("insertHtml")
           .addEventListener("click", function (e) {
             docEditor.serviceCommand("insertHtml", "插入的html内容");
+          });
+        let interValTimer;
+        document
+          .getElementById("insertAiContent")
+          .addEventListener("click", function (e) {
+            // docEditor.serviceCommand("insertAiContent", "插入的html内容");
+            docEditor.serviceCommand("insertAiContent", str);
+          });
+        let str = "";
+        window.addEventListener("message", (event) => {
+          if (event.data.command == "insertAiContent") {
+            if (!messageList.length) {
+              docEditor.serviceCommand("showSelectionOverlay");
+              return;
+            }
+            str += messageList.shift();
+            docEditor.serviceCommand("insertAiContent", str);
+          }
+        });
+        document.getElementById("jump").addEventListener("click", function (e) {
+          docEditor.serviceCommand("jumpToPositionByIndex", {
+            type: "paragraph",
+            paragraphIndex: 5,
+            start: 1,
+            end: 10,
+          });
+        });
+        document
+          .getElementById("highlight")
+          .addEventListener("click", function (e) {
+            let list = [
+              {
+                type: "paragraph",
+                paragraphIndex: 5,
+                start: 1,
+                end: 10,
+              },
+              {
+                type: "paragraph",
+                paragraphIndex: 2,
+                start: 1,
+                end: 10,
+              },
+              {
+                type: "paragraph",
+                paragraphIndex: 3,
+                start: 1,
+                end: 10,
+              },
+              {
+                type: "paragraph",
+                paragraphIndex: 20,
+                start: 1,
+                end: 3,
+              },
+            ];
+            for (let i = 0; i < list.length; i++) {
+              docEditor.serviceCommand("setHighlight", list[i]);
+            }
           });
       }
       initEditor();

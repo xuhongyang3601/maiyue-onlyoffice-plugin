@@ -110,6 +110,24 @@
     function insertHtml(data) {
         window.Asc.plugin.executeMethod("PasteHtml", [data]);
     }
+    // 按指定位置高亮背景色
+    function setHighlight(data) {
+        window.Asc.scope.setHighlightData = data;
+        window.Asc.plugin.callCommand(() => {
+            let { paragraphIndex, start, end, color } = Asc.scope.setHighlightData;
+            let doc = Api.GetDocument();
+            let paragraph = doc.GetElement(paragraphIndex);
+            let range = paragraph.GetRange(start, end);
+            range.SetHighlight(color || 'red')
+            return range.GetText();
+        }, false, true, (returnValue) => {
+            window.parent.parent.postMessage({
+                command: 'setHighlight',
+                data: returnValue,
+            }, "*")
+        });
+    }
+    // 初始化插件
     window.Asc.plugin.init = () => {
         window.parent.Common.Gateway.on('internalcommand', (data) => {
             const { command } = data;
@@ -132,6 +150,9 @@
                 // 插入html
                 case "insertHtml":
                     insertHtml(data.data);
+                    break;
+                case "setHighlight":
+                    setHighlight(data.data);
                     break;
                 default:
                     break;
