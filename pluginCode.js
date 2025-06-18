@@ -158,5 +158,8 @@
                     break;
             }
         });
+        window.parent.parent.postMessage({
+            command: 'maiyuePluginReady',
+        }, "*")
     };
 })(window, undefined);
