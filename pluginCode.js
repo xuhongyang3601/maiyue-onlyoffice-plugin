@@ -133,6 +133,32 @@
             }, "*")
         });
     }
+    // 按表格位置高亮背景色
+    function setHighlightByTableIndex(data) {
+        window.Asc.scope.setHighlightByTableIndexData = data;
+        window.Asc.plugin.callCommand(() => {
+            let { tableIndex, rowIndex, cellIndex, start, end, color } = Asc.scope.setHighlightByTableIndexData;
+            let doc = Api.GetDocument();
+            let tables = doc.GetAllTables();
+            let table = tables[tableIndex];
+            if (!table) {
+                return "没有找到对应的表格";
+            }
+            let cell = table.GetCell(rowIndex, cellIndex);
+            if (!cell) {
+                return "没有找到对应的单元格";
+            }
+            let range = cell.GetContent().GetRange(start, end);
+            range.SetHighlight(color || 'red');
+            return range.GetText();
+        }, false, true, (returnValue) => {
+            window.parent.parent.postMessage({
+                command: 'setHighlightByTableIndex',
+                frameEditorId: window.parent.frameEditorId,
+                data: returnValue,
+            }, "*")
+        });
+    }
     // 初始化插件
     window.Asc.plugin.init = () => {
         window.parent.Common.Gateway.on('internalcommand', (data) => {
@@ -159,6 +185,9 @@
                     break;
                 case "setHighlight":
                     setHighlight(data.data);
+                    break;
+                case "setHighlightByTableIndex":
+                    setHighlightByTableIndex(data.data);
                     break;
                 default:
                     break;

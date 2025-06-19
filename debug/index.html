@@ -19,6 +19,7 @@
     <button id="insertHtml">插入html</button>
     <button id="insertAiContent">插入AI内容</button>
     <button id="highlight">高亮内容</button>
+    <button id="highlightTable">高亮表格内容</button>
     <button id="jump">跳转指定位置</button>
     <div id="placeholder"></div>
     <script
@@ -155,6 +156,17 @@
           .getElementById("jumpTable")
           .addEventListener("click", function (e) {
             docEditor.serviceCommand("jumpToPositionByTableIndex", {
+              tableIndex: 0,
+              rowIndex: 1,
+              cellIndex: 1,
+              start: 0,
+              end: 1,
+            });
+          });
+        document
+          .getElementById("highlightTable")
+          .addEventListener("click", function (e) {
+            docEditor.serviceCommand("setHighlightByTableIndex", {
               tableIndex: 0,
               rowIndex: 1,
               cellIndex: 1,
