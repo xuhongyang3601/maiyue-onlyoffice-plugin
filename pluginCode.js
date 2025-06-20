@@ -14,6 +14,7 @@
                 let doc = Api.GetDocument();
                 let paragraph = doc.GetElement(paragraphIndex);
                 let range = paragraph.GetRange(start, end);
+                console.log("paragraphIndex:" + paragraphIndex, paragraph.GetText());
                 if (replaceText) {
                     range.AddText(replaceText, 'after');
                     let deleteRange = paragraph.GetRange(start, end);
@@ -53,8 +54,13 @@
                     return "没有找到对应的单元格";
                 }
                 let range = cell.GetContent().GetRange(start, end);
+                let text = range.GetText();
+                console.log('tableIndex:', tableIndex)
+                console.log('rowIndex:', tableIndex)
+                console.log('cellIndex:', cellIndex)
+                console.log('text:', text)
                 range.Select();
-                return range.GetText();
+                return text;
             }, false, true, (returnValue) => {
                 window.parent.parent.postMessage({
                     command: 'selectPositionInTheTable',
@@ -123,8 +129,11 @@
             let doc = Api.GetDocument();
             let paragraph = doc.GetElement(paragraphIndex);
             let range = paragraph.GetRange(start, end);
-            range.SetHighlight(color || 'red')
-            return range.GetText();
+            range.SetHighlight(color || 'red');
+            console.log('paragraphIndex:' + paragraphIndex, paragraph.GetText());
+            range = paragraph.GetRange(start, end);
+            let text = range.GetText();
+            return text
         }, false, true, (returnValue) => {
             window.parent.parent.postMessage({
                 command: 'setHighlight',
@@ -149,11 +158,21 @@
                 return "没有找到对应的单元格";
             }
             let range = cell.GetContent().GetRange(start, end);
+            let text = range.GetText();
+            console.log('tableIndex:', tableIndex)
+            console.log('rowIndex:', tableIndex)
+            console.log('cellIndex:', cellIndex)
+            console.log('text:', text)
             range.SetHighlight(color || 'red');
-            return range.GetText();
+            return text;
         }, false, true, (returnValue) => {
             window.parent.parent.postMessage({
                 command: 'setHighlightByTableIndex',
+                frameEditorId: window.parent.frameEditorId,
+                data: returnValue,
+            }, "*")
+            window.parent.parent.postMessage({
+                command: 'setHighlight',
                 frameEditorId: window.parent.frameEditorId,
                 data: returnValue,
             }, "*")

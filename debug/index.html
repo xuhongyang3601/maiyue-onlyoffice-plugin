@@ -210,33 +210,304 @@
           .addEventListener("click", function (e) {
             let list = [
               {
-                type: "paragraph",
-                paragraphIndex: 5,
-                start: 1,
-                end: 10,
+                content: "123",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 16,
+
+                  end: 17,
+
+                  paragraphIndex: 2,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
+
+                rightLoc: {
+                  start: 16,
+
+                  end: 20,
+
+                  paragraphIndex: 2,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
               },
+
               {
-                type: "paragraph",
-                paragraphIndex: 2,
-                start: 1,
-                end: 10,
+                content: "abc",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 20,
+
+                  end: 21,
+
+                  paragraphIndex: 5,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
+
+                rightLoc: {
+                  start: 20,
+
+                  end: 24,
+
+                  paragraphIndex: 5,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
               },
+
               {
-                type: "paragraph",
-                paragraphIndex: 3,
-                start: 1,
-                end: 10,
+                content: "123",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 0,
+
+                  end: 0,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 1,
+
+                  cellIndex: 1,
+                },
+
+                rightLoc: {
+                  start: 0,
+
+                  end: 3,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 1,
+
+                  cellIndex: 5,
+                },
               },
+
               {
-                type: "paragraph",
-                paragraphIndex: 20,
-                start: 1,
-                end: 3,
+                content: "1",
+
+                diffType: "DELETE",
+
+                leftLoc: {
+                  start: 0,
+
+                  end: 1,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 3,
+
+                  cellIndex: 4,
+                },
+
+                rightLoc: {
+                  start: 0,
+
+                  end: 2,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 3,
+
+                  cellIndex: 4,
+                },
+              },
+
+              {
+                content: "2",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 0,
+
+                  end: 0,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 3,
+
+                  cellIndex: 4,
+                },
+
+                rightLoc: {
+                  start: 0,
+
+                  end: 1,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 3,
+
+                  cellIndex: 4,
+                },
+              },
+
+              {
+                content: "123",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 0,
+
+                  end: 1,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 3,
+
+                  cellIndex: 4,
+                },
+
+                rightLoc: {
+                  start: 0,
+
+                  end: 3,
+
+                  paragraphIndex: 0,
+
+                  tableIndex: 0,
+
+                  rowIndex: 4,
+
+                  cellIndex: 5,
+                },
+              },
+
+              {
+                content: "cccc",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 26,
+
+                  end: 27,
+
+                  paragraphIndex: 11,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
+
+                rightLoc: {
+                  start: 26,
+
+                  end: 31,
+
+                  paragraphIndex: 10,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
+              },
+
+              {
+                content: "ddd",
+
+                diffType: "INSERT",
+
+                leftLoc: {
+                  start: 19,
+
+                  end: 20,
+
+                  paragraphIndex: 13,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
+
+                rightLoc: {
+                  start: 19,
+
+                  end: 23,
+
+                  paragraphIndex: 12,
+
+                  tableIndex: -1,
+
+                  rowIndex: -1,
+
+                  cellIndex: -1,
+                },
               },
             ];
-            for (let i = 0; i < list.length; i++) {
-              docEditor.serviceCommand("setHighlight", list[i]);
+            // for (let i = 0; i < list.length; i++) {
+            //   let item = list[i].leftLoc;
+            //   if (item.tableIndex !== -1) {
+            //     docEditor.serviceCommand("setHighlightByTableIndex", item);
+            //   } else {
+            //     docEditor.serviceCommand("setHighlight", item);
+            //   }
+            // }
+            let item = list.shift().leftLoc;
+            if (item.tableIndex !== -1) {
+              docEditor.serviceCommand("setHighlightByTableIndex", item);
+            } else {
+              docEditor.serviceCommand("setHighlight", item);
             }
+            window.addEventListener("message", (event) => {
+              if (event.data.command == "setHighlight") {
+                if (!list.length) {
+                  return;
+                }
+                let item = list.shift().leftLoc;
+                if (item.tableIndex !== -1) {
+                  docEditor.serviceCommand("setHighlightByTableIndex", item);
+                } else {
+                  docEditor.serviceCommand("setHighlight", item);
+                }
+              }
+            });
           });
       }
       initEditor();
