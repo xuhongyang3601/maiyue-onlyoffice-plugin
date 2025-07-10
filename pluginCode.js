@@ -42,7 +42,7 @@
         }, false, true, (returnValue) => { })
         setTimeout(() => {
             window.Asc.plugin.callCommand(() => {
-                let { tableIndex, rowIndex, cellIndex, start, end } = Asc.scope.selectPositionInTheTableData;
+                let { tableIndex, rowIndex, cellIndex, start, end, replaceText } = Asc.scope.selectPositionInTheTableData;
                 let doc = Api.GetDocument();
                 let tables = doc.GetAllTables();
                 let table = tables[tableIndex];
@@ -54,12 +54,18 @@
                     return "没有找到对应的单元格";
                 }
                 let range = cell.GetContent().GetRange(start, end);
-                let text = range.GetText();
                 console.log('tableIndex:', tableIndex)
                 console.log('rowIndex:', tableIndex)
                 console.log('cellIndex:', cellIndex)
-                console.log('text:', text)
+                if (replaceText) {
+                    range.AddText(replaceText, 'after');
+                    let deleteRange = cell.GetContent().GetRange(start, end);
+                    deleteRange.Delete();
+                    range = cell.GetContent().GetRange(start, start + replaceText.length);
+                }
                 range.Select();
+                let text = range.GetText();
+                console.log('text:', text)
                 return text;
             }, false, true, (returnValue) => {
                 window.parent.parent.postMessage({
